@@ -1,0 +1,29 @@
+{
+  "elements": [
+    {"id": "start", "type": "startEvent", "name": "Inicio"},
+    {"id": "checkDays", "type": "serviceTask", "service": "http", "method": "GET", "url": "https://example.com/days/{{userId}}", "name": "Verificar Dias"},
+    {"id": "gatewayDays", "type": "exclusiveGateway", "name": "Tiene dias?"},
+    {"id": "requestForm", "type": "userTask", "name": "Solicitud Vacaciones", "form": [
+      {"field": "from", "label": "Desde"},
+      {"field": "to", "label": "Hasta"}
+    ]},
+    {"id": "managerApprove", "type": "userTask", "name": "Aprobacion Jefe", "form": [{"field": "approved", "label": "Aprobado?", "mock": true}]},
+    {"id": "hrConfirm", "type": "userTask", "name": "Confirma RRHH", "form": [{"field": "confirmed", "label": "Confirmado?", "mock": true}]},
+    {"id": "saveDb", "type": "serviceTask", "service": "db", "collection": "vacaciones", "name": "Guardar"},
+    {"id": "notify", "type": "serviceTask", "service": "http", "method": "POST", "url": "https://example.com/notify", "body": {"user": "{{userId}}", "msg": "Vacaciones aprobadas"}, "name": "Notificar"},
+    {"id": "end", "type": "endEvent", "name": "Fin"}
+  ],
+  "flows": [
+    {"from": "start", "to": "checkDays"},
+    {"from": "checkDays", "to": "gatewayDays"},
+    {"from": "gatewayDays", "to": "requestForm", "condition": "context.available"},
+    {"from": "gatewayDays", "to": "end", "condition": "!context.available"},
+    {"from": "requestForm", "to": "managerApprove"},
+    {"from": "managerApprove", "to": "hrConfirm", "condition": "context.managerApprove.approved"},
+    {"from": "managerApprove", "to": "end", "condition": "!context.managerApprove.approved"},
+    {"from": "hrConfirm", "to": "saveDb", "condition": "context.hrConfirm.confirmed"},
+    {"from": "hrConfirm", "to": "end", "condition": "!context.hrConfirm.confirmed"},
+    {"from": "saveDb", "to": "notify"},
+    {"from": "notify", "to": "end"}
+  ]
+}
