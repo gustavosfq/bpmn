@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BPMN Modeler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toolbar">
+    <button onclick="addNode('startEvent')">Start</button>
+    <button onclick="addNode('userTask')">User Task</button>
+    <button onclick="addNode('serviceTask')">Service Task</button>
+    <button onclick="addNode('exclusiveGateway')">Gateway</button>
+    <button onclick="addNode('endEvent')">End</button>
+    <button onclick="downloadJson()">Save JSON</button>
+    <input type="file" id="load" onchange="loadJson(event)">
+  </div>
+  <div id="canvas"></div>
+
+  <div id="modal" class="hidden">
+    <div class="content">
+      <h3>Edit Node</h3>
+      <label>ID <input id="m-id"></label>
+      <label>Name <input id="m-name"></label>
+      <select id="m-type">
+        <option value="startEvent">startEvent</option>
+        <option value="userTask">userTask</option>
+        <option value="serviceTask">serviceTask</option>
+        <option value="exclusiveGateway">exclusiveGateway</option>
+        <option value="endEvent">endEvent</option>
+      </select>
+      <textarea id="m-extra" placeholder="extra JSON"></textarea>
+      <button onclick="saveModal()">Save</button>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
